@@ -1,0 +1,36 @@
+name: ipaas-build
+on:
+  workflow_dispatch:
+    inputs:
+      outcome:
+        description: "success or failure (failure exercises the FAILED run state)"
+        type: choice
+        options: [success, failure]
+        default: success
+      sleep_seconds:
+        description: "seconds to sleep before finishing (cancel probes use ~90)"
+        default: "5"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: work
+        run: |
+          echo "ipaas probe run ${{ github.run_id }} on ${{ github.ref_name }} @ ${{ github.sha }}"
+          sleep "${{ inputs.sleep_seconds }}"
+          echo "ipaas artifact for run ${{ github.run_id }}" > ipaas-artifact.txt
+      - uses: actions/cache@v4
+        with:
+          path: ipaas-artifact.txt
+          key: ipaas-cache-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ipaas-artifact
+          path: ipaas-artifact.txt
+          retention-days: 1
+      - name: outcome
+        if: ${{ inputs.outcome == 'failure' }}
+        run: exit 1
