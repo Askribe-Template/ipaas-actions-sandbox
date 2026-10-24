@@ -1,0 +1,14 @@
+name: ipaas-deploy
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    environment:
+      name: ipaas-preview
+      url: https://askribe-template.github.io/ipaas-actions-sandbox/
+    steps:
+      - run: echo "ipaas pretend deploy of ${{ github.sha }} from ${{ github.ref_name }}"
