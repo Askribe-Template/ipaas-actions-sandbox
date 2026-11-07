@@ -10,8 +10,14 @@ on:
       sleep_seconds:
         description: "seconds to sleep before finishing (cancel probes use ~90)"
         default: "5"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
