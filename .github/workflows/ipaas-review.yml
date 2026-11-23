@@ -1,0 +1,12 @@
+name: ipaas-review
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    environment: ipaas-review
+    steps:
+      - run: echo "ipaas review probe ${{ github.run_id }}"
